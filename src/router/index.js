@@ -1,8 +1,8 @@
 import { TestRouter } from "../components";
-
+import { RouterGender } from "../components";
 // cada vez que quiera agregar unaruta nueva,
 // creo el path e importo el componente
-const listRoutes = [["/test", TestRouter]];
+const listRoutes = [["/test", TestRouter],["/gender", RouterGender]];
 
 export const routes = (app) => {
   listRoutes.forEach(([path, controller]) => {
