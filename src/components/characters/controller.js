@@ -14,7 +14,7 @@ export const findAll = async (req,res) => {
 
         res.json({
             ok:false,
-            data: movie,
+            data: character,
         })
     }catch(error){
         res.json({
@@ -98,16 +98,15 @@ export const findOneCharacter = async(req, res)=>{
         id:Number(id)
       },
       include:{
-        movie:{
+        pelicula:{
           select:{
-            name:true
+            titulo:true
           }
-        }
-      }
+        }}
     })
     return res.json({
         ok:true,
-        message: peliculaDetalle
+        message: personajeDetalle
     })
   }catch(error){
     res.json({

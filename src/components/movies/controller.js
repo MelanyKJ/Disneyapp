@@ -8,7 +8,7 @@ export const findAll = async (req,res) => {
                     select:{
           		id:true,
           		image:true,
-          		name:true,
+          		titulo:true,
           		fecha_publicacion:true
                     },
             orderBy:{
@@ -101,7 +101,7 @@ export const findOneMovie = async(req, res)=>{
         id:Number(id)
       },
       include:{
-        character:{
+        personajes:{
           select:{
             name:true
           }
