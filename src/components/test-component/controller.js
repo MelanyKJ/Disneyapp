@@ -21,6 +21,7 @@ export const findAll = async (req, res) => {
 
 export const create = async (req, res) => {
   try {
+    
     const { body } = req;
     await bcrypt.hash(body.password, 10, async(err, hash) => {
       if(err){
@@ -111,18 +112,31 @@ export const login = async (req, res) => {
   })
 } */
 export const ensureToken = (req,res,next) => {
+  console.log(req.url)
+  if(req.url === "/login/" || req.url === "/register/"){
+    next();
+    return
+  }
   const bearerHeader = req.headers['authorization']
   console.log(bearerHeader)
   if(typeof bearerHeader !== 'undefined'){
       const bearer = bearerHeader.split(" ");
       const bearerToken = bearer[1];
       req.token = bearerToken
-      next();
+      jwt.verify(req.token, 'the-super-strong-secrect', (err,data) => {
+        if(err){
+            res.sendStatus(403)
+        }else{
+          next();
+        }
+    })
+      
   }else{
       res.sendStatus(403)
   }
 }
-export const hola = (req,res) => {
+
+/* export const hola = (req,res) => {
   jwt.verify(req.token, 'the-super-strong-secrect', (err,data) => {
     if(err){
         res.sendStatus(403)
@@ -134,4 +148,4 @@ export const hola = (req,res) => {
         })
     }
 })
-}
+} */
