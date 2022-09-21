@@ -15,7 +15,6 @@ model User {
   phone_number String?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
-
   @@map("users")
 }
 
@@ -30,7 +29,6 @@ model Character {
   idPelicula Int
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
-
   @@map("characters")
 }
 
@@ -45,7 +43,6 @@ model Movie {
   character Character[]
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
-
   @@map("movies")
 }
 
@@ -56,6 +53,5 @@ image String?
 movie Movie[]
 createdAt DateTime @default(now())
 updatedAt DateTime @updatedAt
-
   @@map("genders")
 }
