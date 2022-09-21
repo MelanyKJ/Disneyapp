@@ -13,7 +13,7 @@ export const findAll = async (req,res) => {
         });
 
         res.json({
-            ok:false,
+            ok:true,
             data: character,
         })
     }catch(error){
@@ -28,15 +28,21 @@ export const findAll = async (req,res) => {
 export const create = async (req, res) => {
     try{
         const { body } = req;
-
+        console.log(body.character);
         const personaje = await prisma.character.create({
-            data:{
-                ...body,
-            }
+            data:{ body.character}
+
         });
+        const movie = await prisma.movie.create({
+          data:{ body.movie}
+        })
+
+        const relationMovieCharacter = await prisma.MovieOnCharacter.create({
+          data:{ characterId: personaje.id, movieId:movie.id}
+        })
         res.json({
             ok:true,
-            data:personaje
+            data:{personaje, movie, relationMovieCharacter}
         })
     }catch(error){
         res.json({
@@ -100,7 +106,11 @@ export const findOneCharacter = async(req, res)=>{
       include:{
         pelicula:{
           select:{
-            titulo:true
+            movie:{
+              select:{
+                titulo:true
+              }
+            }
           }
         }}
     })
