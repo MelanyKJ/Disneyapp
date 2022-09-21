@@ -15,43 +15,58 @@ model User {
   phone_number String?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+
   @@map("users")
 }
 
 model Character {
-  id         Int       @id @default(autoincrement())
+  id         Int                @id @default(autoincrement())
   name       String
   date_birth DateTime?
   image      String?
   weight     Float?
   history    String?
-  pelicula   Movie @relation(fields:[idPelicula],references: [id])
-  idPelicula Int
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
+  peliculaId Int?
+  pelicula   Movie?             @relation(fields: [peliculaId], references: [id])
+  peliculas  MovieOnCharacter[]
+  createdAt  DateTime           @default(now())
+  updatedAt  DateTime           @updatedAt
+
   @@map("characters")
 }
 
 model Movie {
-  id Int @id @default(autoincrement())
-  image String?
-  titulo String
+  id                Int                @id @default(autoincrement())
+  image             String?
+  titulo            String
   fecha_publicacion DateTime?
-  calificacion String?
-  personajes Gender @relation(fields: [idGender],references: [id])
-  idGender Int
-  character Character[]
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
+  calificacion      String?
+  genero            Gender             @relation(fields: [idGender], references: [id])
+  idGender          Int
+  character         MovieOnCharacter[]
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  Character         Character[]
+
   @@map("movies")
 }
 
-model Gender{
-id Int @id @default(autoincrement())
-name String
-image String?
-movie Movie[]
-createdAt DateTime @default(now())
-updatedAt DateTime @updatedAt
+model MovieOnCharacter {
+  character   Character @relation(fields: [characterId], references: [id])
+  characterId Int
+  movie       Movie     @relation(fields: [movieId], references: [id])
+  movieId     Int
+
+  @@id([characterId, movieId])
+}
+
+model Gender {
+  id        Int      @id @default(autoincrement())
+  name      String
+  image     String?
+  movie     Movie[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   @@map("genders")
 }
