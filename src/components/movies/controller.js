@@ -140,7 +140,7 @@ export const FindByMovies = async(req, res) => {
                 data: movie,
             })
         }
-  if(name){
+  else if(name){
     const movie = await prisma.movie.findMany({
       where:{
         titulo: name
