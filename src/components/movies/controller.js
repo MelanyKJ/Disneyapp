@@ -11,9 +11,6 @@ export const findAll = async (req,res) => {
           		titulo:true,
           		fecha_publicacion:true
                     },
-            orderBy:{
-                  fecha_publicacion:"asc"
-            }
         });
 
         res.json({
@@ -121,4 +118,64 @@ export const findOneMovie = async(req, res)=>{
       error:error.message
     })
   }
+}
+
+export const FindByMovies = async(req, res) => {
+  try{
+        const { name, gender, order } = req.query
+  if(name){
+    const movie = await prisma.movie.findMany({
+      where:{
+        titulo: name
+      },
+      select:{
+        id:true,
+        image:true,
+        titulo:true,
+        fecha_publicacion:true
+      }
+    })
+    return res.json({
+        ok:true,
+        data:movie
+    })
+  }else if (gender) {
+    const movies = await prisma.movie.findMany({
+      where:{
+        idGender: Number(gender)
+      },
+      select:{
+          id:true,
+          image:true,
+          titulo:true,
+          fecha_publicacion:true
+        }
+    })
+    return res.json({
+        ok:true,
+        data:movies
+    })
+}else if (order) {
+    const movies = await prisma.movie.findMany({
+      orderBy:{
+        fecha_publicacion:order.toLowerCase()
+      },
+      select:{
+        id:true,
+        titulo:true,
+        fecha_publicacion:true
+      }
+    })
+    res.json({
+    ok:true,
+    data:movies
+    })
+  }
+}catch(error){
+    return res.json({
+        ok:false,
+        error: error.message
+    })
+
+}
 }
