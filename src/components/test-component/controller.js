@@ -34,7 +34,7 @@ export const create = async (req, res) => {
             email: body.email,
             password:hash,
             name: body.name,
-            phone_number:body.phone_number 
+            phone_number:body.phone_number
           },
         });
         res.json({
@@ -42,7 +42,7 @@ export const create = async (req, res) => {
           data: user,
         });
       }
-      
+
     })
   } catch (error) {
     res.json({
@@ -98,7 +98,7 @@ export const login = async (req, res) => {
 
   const theToken = req.headers.authorization.split(' ')[1];
   const decoded = jwt.verify(theToken,'the-super-strong-secrect')
-  
+
   await prisma.user.findMany({
     where:{id:decoded.id}
   }, function(error,result,fields){
@@ -110,28 +110,28 @@ export const login = async (req, res) => {
     })
   })
 } */
+
 export const ensureToken = (req,res,next) => {
+  console.log(req.url)
+  if(req.url === "/login/" || req.url === "/register/"){
+    next();
+    return
+  }
   const bearerHeader = req.headers['authorization']
   console.log(bearerHeader)
   if(typeof bearerHeader !== 'undefined'){
       const bearer = bearerHeader.split(" ");
       const bearerToken = bearer[1];
       req.token = bearerToken
-      next();
+      jwt.verify(req.token, 'the-super-strong-secrect', (err,data) => {
+        if(err){
+            res.sendStatus(403)
+        }else{
+          next();
+        }
+    })
+
   }else{
       res.sendStatus(403)
   }
-}
-export const hola = (req,res) => {
-  jwt.verify(req.token, 'the-super-strong-secrect', (err,data) => {
-    if(err){
-        res.sendStatus(403)
-    }else{
-        res.json({
-            text: 'protected',
-            data,
-            status:"Hola"
-        })
-    }
-})
 }

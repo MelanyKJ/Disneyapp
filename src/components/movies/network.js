@@ -8,4 +8,5 @@ routerMovie.route("/").post(Controller.create);
 routerMovie.route("/update/:id").put(Controller.update);
 routerMovie.route("/remove/:id").delete(Controller.remove);
 routerMovie.route("/detail/:id").get(Controller.findOneMovie);
+routerMovie.route("/find/").get(Controller.FindByMovies);
 export default routerMovie;

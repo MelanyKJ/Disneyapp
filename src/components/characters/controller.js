@@ -28,13 +28,14 @@ export const findAll = async (req,res) => {
 export const create = async (req, res) => {
     try{
         const { body } = req;
-        console.log(body.character);
-        const personaje = await prisma.character.create({
-            data:{ body.character}
+        const newCharacter = body.character;
+        const newMovie = body.movie;
 
+        const personaje = await prisma.character.create({
+            data:{...newCharacter}
         });
         const movie = await prisma.movie.create({
-          data:{ body.movie}
+          data:{ ...newMovie}
         })
 
         const relationMovieCharacter = await prisma.MovieOnCharacter.create({
@@ -96,6 +97,8 @@ export const remove = async (req,res) => {
     }
 }
 
+
+//
 export const findOneCharacter = async(req, res)=>{
   try{
     const{id} = req.params;
@@ -104,15 +107,16 @@ export const findOneCharacter = async(req, res)=>{
         id:Number(id)
       },
       include:{
-        pelicula:{
-          select:{
+        peliculas:{
+          include:{
             movie:{
               select:{
                 titulo:true
               }
             }
           }
-        }}
+        }
+      }
     })
     return res.json({
         ok:true,
@@ -124,4 +128,70 @@ export const findOneCharacter = async(req, res)=>{
       error:error.message
     })
   }
+}
+
+
+
+
+export const FindByQuery = async (req,res) => {
+    //console.log(name)
+    try{
+        let { name, age, weight, movie } = req.query
+
+    if(movie){
+        let characters = await prisma.character.findMany({
+            where:{
+                peliculaId: Number(movie)
+            },
+            select:{
+                name:true,
+                image:true,
+                pelicula:true
+            }
+        })
+        return res.json({
+            ok:true,
+            data:characters
+        })
+    }else if(age){
+        const characters = await prisma.character.findMany()
+        const fechaHoy = new Date()
+        const anioNacimiento = fechaHoy.getFullYear() - Number(age)
+        console.log(anioNacimiento)
+        const filterAge = characters.filter((e)=>
+            e.date_birth.getFullYear() == anioNacimiento
+        )
+
+        return res.json({
+            ok:true,
+            data:filterAge
+        })
+
+    }else{
+        let characters = await prisma.character.findMany({
+            where:{
+                OR:[
+                    {name:name},
+                    {weight:Number(weight)},
+
+                ]
+            },
+            select:{
+                name:true,
+                image:true
+            }
+        })
+        return res.json({
+            ok:true,
+            data:characters
+        })
+    }
+    }catch(error){
+        return res.json({
+            ok:false,
+            error: error.message
+        })
+
+    }
+
 }
