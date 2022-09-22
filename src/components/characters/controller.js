@@ -123,7 +123,7 @@ export const findOneCharacter = async(req, res)=>{
         message: personajeDetalle
     })
   }catch(error){
-    res.json({
+    return res.json({
       ok:false,
       error:error.message
     })
@@ -154,7 +154,7 @@ export const FindByQuery = async (req,res) => {
           })
         }
 
-    if(movie){
+    else if(movie){
         let characters = await prisma.character.findMany({
             where:{
                 peliculaId: Number(movie)
