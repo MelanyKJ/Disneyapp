@@ -137,6 +137,22 @@ export const FindByQuery = async (req,res) => {
     //console.log(name)
     try{
         let { name, age, weight, movie } = req.query
+        if(Object.keys(
+          req.query
+        ).length === 0){
+          const character = await prisma.character.findMany({
+              select:{
+                      id:true,
+                      name:true,
+                      image:true,
+                      },
+          });
+
+          res.json({
+              ok:true,
+              data: character,
+          })
+        }
 
     if(movie){
         let characters = await prisma.character.findMany({

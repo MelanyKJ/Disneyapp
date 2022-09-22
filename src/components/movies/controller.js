@@ -123,6 +123,23 @@ export const findOneMovie = async(req, res)=>{
 export const FindByMovies = async(req, res) => {
   try{
         const { name, gender, order } = req.query
+        if(Object.keys(
+          req.query
+        ).length === 0){
+            const movie = await prisma.movie.findMany({
+                        select:{
+              		id:true,
+              		image:true,
+              		titulo:true,
+              		fecha_publicacion:true
+                        },
+            });
+
+            res.json({
+                ok:true,
+                data: movie,
+            })
+        }
   if(name){
     const movie = await prisma.movie.findMany({
       where:{
